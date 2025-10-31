@@ -1,5 +1,6 @@
-def get_order_data_with_color(self, color):
-    order_request = {
+from . import response_text 
+
+ORDER_DATA = {
     "firstName": "Твайлайт",
     "lastName": "Спаркл",
     "address": "Библиотека Золотой Дуб, Понивилль",
@@ -8,12 +9,16 @@ def get_order_data_with_color(self, color):
     "rentTime": 5,
     "deliveryDate": "2025-10-25",
     "comment": "дружба — это чудо",
-    "color": [color] if color else []}
-    return order_request
+    "color": []
+}
+
+def get_order_data_with_color(color):
+    data = dict(ORDER_DATA)
+    data['color'] = [color] if color else []
+    return data
 
 
-def get_order_list(self):
-    order_list_request = {
+ORDER_LIST_DATA = {
     "orders": [
         {
             "id": 4,
@@ -78,5 +83,33 @@ def get_order_list(self):
             "color": "#D92B2C"
         }
     ]
- }
-    return order_list_request
+}
+
+
+LOGIN_TEST_DATA = [
+    ({"login": "pinkie", "password": "party"}, 200, "id", "Проверка логина с корректными данными"),
+    (
+        {"login": "", "password": "party"},
+        400,
+        response_text.bad_request_login_response_text,
+        "Авторизация с некорректными данными: Отсутствует логин",
+    ),
+    (
+        {"login": "pinkie", "password": ""},
+        400,
+        response_text.bad_request_login_response_text,
+        "Авторизация с некорректными данными: Отсутствует пароль",
+    ),
+    (
+        {"login": "pinkie", "password": "partyparty"},
+        404,
+        response_text.user_not_found_response_text,
+        "Авторизация с некорректными данными: Неправильный пароль",
+    ),
+    (
+        {"login": "pink", "password": "party"},
+        404,
+        response_text.user_not_found_response_text,
+        "Авторизация с некорректными данными: Неправильный логин",
+    ),
+]
