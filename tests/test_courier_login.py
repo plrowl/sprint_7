@@ -1,8 +1,7 @@
-import requests
-from data import urls
-from data import data
 import pytest
 import allure
+from data import data
+from helpers import api_client
 
 
 class TestLoginCourier:
@@ -13,6 +12,7 @@ class TestLoginCourier:
         payload, exp_status_code, exp_text, title_case = login_data
         allure.dynamic.title(title_case)
 
-        response = requests.post(urls.login_courier_url, data=payload)
+        response = api_client.api_login_courier_payload(payload)
+
         assert response.status_code == exp_status_code
         assert exp_text in response.text

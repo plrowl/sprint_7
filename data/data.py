@@ -113,3 +113,18 @@ LOGIN_TEST_DATA = [
         "Авторизация с некорректными данными: Неправильный логин",
     ),
 ]
+
+COURIER_NEGATIVE_CREATE_DATA = [
+    (
+        {"login": "", "password": "qwe321", "firstName": "Безлогина"},
+        400,
+        response_text.bad_request_response_text,
+        'Создание курьера без логина'
+    ),
+    (
+        {"login": "testoviylogin", "password": "", "firstName": "Безпароля"},
+        400,
+        response_text.bad_request_response_text,
+        'Создание курьера без пароля'
+    ),
+]

@@ -1,8 +1,6 @@
-import requests
+from helpers import api_client
 import random
 import string
-from data import urls
-
 
 def generate_random_string(length):
         letters = string.ascii_lowercase
@@ -20,29 +18,22 @@ def generate_new_courier_payload():
 
 def register_new_courier_and_return_login_password():
     payload = generate_new_courier_payload()
-    requests.post(urls.create_courier_url, data=payload)
+    api_client.api_create_courier(payload)
     return payload
 
-
 def login_courier_get_id(login, password):
-    resp = requests.post(urls.login_courier_url, data={"login": login, "password": password}, timeout=10)
+    resp = api_client.api_login_courier(login, password)
     if resp.status_code != 200:
         return None
-    body = resp.json()
-    return body.get("id")
-
-def delete_courier_by_id(courier_id):
-    if courier_id is None:
-        return
-    requests.delete(f"{urls.base_url}/api/v1/courier/{courier_id}", timeout=10)
+    return resp.json().get("id")
 
 def delete_courier_by_payload(payload):
     login = payload.get("login")
     password = payload.get("password")
     if not login or not password:
         return
-    cid = login_courier_get_id(login, password)
-    delete_courier_by_id(cid)
+    courier_id = login_courier_get_id(login, password)
+    api_client.api_delete_courier_by_id(courier_id)
 
 def cancel_order_by_track(track):
-    requests.put(f"{urls.base_url}/api/v1/orders/cancel", json={"track": track}, timeout=10)
+    api_client.api_cancel_order(track)
